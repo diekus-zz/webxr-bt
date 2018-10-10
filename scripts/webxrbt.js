@@ -54,9 +54,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Nordic Thingy stuff...
   let guiManager,
-      guiPanel;
+      guiPanel,
+      thingy = new Thingy({logEnabled: true});
 
-  let addGuiButton = function(id, text) {
+
+  const degreesToRadians = function(degrees) {
+    return degrees * Math.PI / 180;
+  }
+
+  const addGuiButton = function(id, text) {
     let button = new BABYLON.GUI.HolographicButton(id);
     guiPanel.addControl(button);
 
@@ -68,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
     return button;
   }
 
-  let setupThingyGui = function() {
+  const setupThingyGui = function() {
 
     // Create the 3D UI manager
     guiManager = new BABYLON.GUI.GUI3DManager(scene);
@@ -87,9 +93,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     let connectButton = addGuiButton('connect', 'Connect Thingy');
-    connectButton.onPointerUpObservable.add(function() {
-      // TODO connect to Thingy
-      connectButton.content.text = 'Connected';
+    connectButton.onPointerUpObservable.add(async function() {
+      const success = await connectThingy();
+      connectButton.content.text = success ? 'Connected' : 'Connection Error';
     });
 
     // Reset optimisation
@@ -99,14 +105,92 @@ document.addEventListener('DOMContentLoaded', function() {
 
   }
 
-  let setupThingy = function() {
-    // TODO
-    setupThingyGui();
-
-    return null;
+  const onThingyButtonPress = function(event) {
+    console.log('thingy button press!');
+    if (event.detail.value === 1) {
+      // TODO on Thingy button press
+    }
   }
 
-  let thingy = setupThingy();
+  const onThingyTemperature = function(data) {
+    console.log('thingy temperature!', data.detail.value);
+  }
+
+  const onThingyOrientation = function(data) {
+    console.log('thingy orientation!', data.detail);
+
+    const {roll, pitch, yaw} = data.detail;
+
+    // TODO apply orientation to something
+    // https://doc.babylonjs.com/resources/rotation_conventions
+    // roll = z, yaw = y, pitch = x
+    // cube.rotation = new BABYLON.Vector3(degreesToRadians(pitch), 
+    //     degreesToRadians(yaw), degreesToRadians(roll));
+  }
+
+  const onThingyColor = function() {
+    console.log('thingy color!', data.detail.red, data.detail.green, data.detail.blue);
+  }
+
+  const onThingyHumidity = function() {
+    console.log('thingy humidity!', data.detail.value + data.detail.unit);
+  }
+
+  const onThingyGas = function() {
+    console.log('thingy gas!', data.detail.TVOC.value +  data.detail.TVOC.unit, 
+      data.detail.eCO2.value + data.detail.eCO2.unit);
+  }
+
+  const connectThingy = async function() {
+
+    try {
+      const success = await thingy.connect();
+
+      if (success) {
+
+        console.log('thingy', thingy);
+
+        // TODO can control the light if we want to
+        // const newLedConfiguration = {
+        //     mode: 'breathe',
+        //     color: 'red',
+        //     intensity: 50,
+        //     delay: 1000,
+        // };
+        // await thingy.led.write(newLedConfiguration);
+
+        await thingy.eulerorientation.start();
+        await thingy.button.start();
+
+        thingy.addEventListener('eulerorientation', onThingyOrientation);
+        thingy.addEventListener('button', onThingyButtonPress);
+        thingy.addEventListener('temperature', onThingyTemperature);
+        thingy.addEventListener('color', onThingyColor);
+        thingy.addEventListener('humidity', onThingyHumidity);
+        thingy.addEventListener('gas', onThingyGas);
+
+        await thingy.temperature.start();
+        await thingy.color.start();
+        await thingy.humidity.start();
+        await thingy.gas.start();
+
+      } else {
+          console.log('Unable to connect to Thingy, is Web Bluetooth supported?');
+          // TEMP
+          alert('error ' + success);
+      }
+
+      return success;
+
+    } catch(error) {
+        console.error('Error connecting to Nordic Thingy', error);
+        // TEMP
+        alert('error! ' + error);
+        return false;
+    }
+  }
+
+  setupThingyGui();
 
 });
 
