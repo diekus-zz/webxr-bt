@@ -67,6 +67,9 @@ document.addEventListener('DOMContentLoaded', function() {
     let button = new BABYLON.GUI.HolographicButton(id);
     guiPanel.addControl(button);
 
+    // alert( button );
+    // alert( button.height );
+
     let textBlock = new BABYLON.GUI.TextBlock();
     textBlock.text = text;
     textBlock.color = "white";
@@ -89,7 +92,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Optimisation for adding multiple controls (https://doc.babylonjs.com/how_to/gui3d)
     guiPanel.blockLayout = true;
 
-    temperatureButton = addGuiButton('temperature', '...');
+    humidityButton = addGuiButton('humidity', 'Humidity\n...');
+    humidityButton.pointerEnterAnimation = null;
+
+    temperatureButton = addGuiButton('temperature', 'Temperature\n...');
     temperatureButton.pointerEnterAnimation = null;
 
     let connectButton = addGuiButton('connect', 'Connect Thingy');
@@ -113,11 +119,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  const onThingyTemperature = function(data) {
-    console.log('thingy temperature!', data.detail.value);
-    temperatureButton.content.text = data.detail.value + '°';
-  }
-
   const onThingyOrientation = function(data) {
     console.log('thingy orientation!', data.detail);
 
@@ -130,18 +131,24 @@ document.addEventListener('DOMContentLoaded', function() {
     //     degreesToRadians(yaw), degreesToRadians(roll));
   }
 
-  const onThingyColor = function() {
-    console.log('thingy color!', data.detail.red, data.detail.green, data.detail.blue);
+
+  const onThingyTemperature = function(data) {
+    console.log('thingy temperature!', data.detail.value);
+    temperatureButton.content.text = 'Temperature\n' + data.detail.value + '°';
   }
 
   const onThingyHumidity = function() {
     console.log('thingy humidity!', data.detail.value + data.detail.unit);
-    //humidityButton.content.text = data.detail.value + data.detail.unit;
+    humidityButton.content.text = 'Humidity\n' + data.detail.value + data.detail.unit;
   }
 
   const onThingyGas = function() {
     console.log('thingy gas!', data.detail.TVOC.value +  data.detail.TVOC.unit, 
       data.detail.eCO2.value + data.detail.eCO2.unit);
+  }
+
+  const onThingyColor = function() {
+    console.log('thingy color!', data.detail.red, data.detail.green, data.detail.blue);
   }
 
   const connectThingy = async function() {
