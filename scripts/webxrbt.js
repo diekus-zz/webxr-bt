@@ -55,6 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Nordic Thingy stuff...
   let guiManager,
       guiPanel,
+      temperatureButton,
       thingy = new Thingy({logEnabled: true});
 
 
@@ -88,14 +89,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Optimisation for adding multiple controls (https://doc.babylonjs.com/how_to/gui3d)
     guiPanel.blockLayout = true;
 
-    let temperatureOutput = addGuiButton('temperature', '23.2 degrees');
-    temperatureOutput.pointerEnterAnimation = null;
-
+    temperatureButton = addGuiButton('temperature', '...');
+    temperatureButton.pointerEnterAnimation = null;
 
     let connectButton = addGuiButton('connect', 'Connect Thingy');
     connectButton.onPointerUpObservable.add(async function() {
       const success = await connectThingy();
       connectButton.content.text = success ? 'Connected' : 'Connection Error';
+      connectButton.pointerEnterAnimation = null;
     });
 
     // Reset optimisation
@@ -114,6 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   const onThingyTemperature = function(data) {
     console.log('thingy temperature!', data.detail.value);
+    temperatureButton.content.text = data.detail.value + '°';
   }
 
   const onThingyOrientation = function(data) {
@@ -134,6 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   const onThingyHumidity = function() {
     console.log('thingy humidity!', data.detail.value + data.detail.unit);
+    //humidityButton.content.text = data.detail.value + data.detail.unit;
   }
 
   const onThingyGas = function() {
@@ -176,16 +179,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
       } else {
           console.log('Unable to connect to Thingy, is Web Bluetooth supported?');
-          // TEMP
-          alert('error ' + success);
       }
 
       return success;
 
     } catch(error) {
         console.error('Error connecting to Nordic Thingy', error);
-        // TEMP
-        alert('error! ' + error);
         return false;
     }
   }
