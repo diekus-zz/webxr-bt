@@ -8,7 +8,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
   let createScene = function(){
     let scene = new BABYLON.Scene(engine);
-    var camera = new BABYLON.WebVRFreeCamera("camera1", new BABYLON.Vector3(0, 0, 0), scene);
+    //var camera = new BABYLON.WebVRFreeCamera("camera1", new BABYLON.Vector3(0, 0, 0), scene);
+    var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 0, -2), scene);
     camera.attachControl(canvas, true);
 
     scene.onPointerDown = function () {
@@ -39,6 +40,62 @@ document.addEventListener('DOMContentLoaded', function() {
   window.addEventListener("resize", function(){
     engine.resize();
   })
+
+  // Nordic Thingy stuff...
+  let guiManager,
+      guiPanel;
+
+  let addGuiButton = function(id, text) {
+    let button = new BABYLON.GUI.HolographicButton(id);
+    guiPanel.addControl(button);
+
+    let textBlock = new BABYLON.GUI.TextBlock();
+    textBlock.text = text;
+    textBlock.color = "white";
+    textBlock.fontSize = 24;
+    button.content = textBlock;
+    return button;
+  }
+
+  let setupThingyGui = function() {
+
+    // Create the 3D UI manager
+    guiManager = new BABYLON.GUI.GUI3DManager(scene);
+
+    guiPanel = new BABYLON.GUI.StackPanel3D();
+    guiPanel.margin = 0.02;
+    guiPanel.isVertical = true;
+    
+    guiManager.addControl(guiPanel);
+
+    // Optimisation for adding multiple controls (https://doc.babylonjs.com/how_to/gui3d)
+    guiPanel.blockLayout = true;
+
+    let temperatureOutput = addGuiButton('temperature', '23.2 degrees');
+    temperatureOutput.pointerEnterAnimation = null;
+
+
+    let connectButton = addGuiButton('connect', 'Connect Thingy');
+    connectButton.onPointerUpObservable.add(function() {
+      // TODO connect to Thingy
+      connectButton.content.text = 'Connected';
+    });
+
+    // Reset optimisation
+    guiPanel.blockLayout = false;
+
+    guiPanel.position.x = 2;
+
+  }
+
+  let setupThingy = function() {
+    // TODO
+    setupThingyGui();
+
+    return null;
+  }
+
+  let thingy = setupThingy();
 
 });
 
