@@ -21,8 +21,19 @@ document.addEventListener('DOMContentLoaded', function() {
     var light2 = new BABYLON.PointLight("light2", new BABYLON.Vector3(0, 1, -1), scene);
 
     // Add and manipulate meshes in the scene
-    var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter:2}, scene);
-    sphere.position = new BABYLON.Vector3(0,0, 2)
+    // var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter:2}, scene);
+    // sphere.position = new BABYLON.Vector3(0, 0, 2);
+    
+    //loads a glb file into the scene
+    let assetsManager = new BABYLON.AssetsManager(scene);
+    let parrotTask = assetsManager.addMeshTask('parrot task', '', '../models/', 'lapa_hi.glb');
+    let branchTask = assetsManager.addMeshTask('branch task', '', '../models/', 'branch.glb');
+    
+    // BABYLON.SceneLoader.Append('../models/', 'lapa_hi.glb', scene, function (scene) {
+    // });
+
+    // BABYLON.SceneLoader.Append('../models/', 'branch.glb', scene, function (scene) {
+    // });
 
     return scene;
 
