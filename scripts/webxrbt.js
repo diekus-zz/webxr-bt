@@ -65,14 +65,14 @@ document.addEventListener('DOMContentLoaded', function() {
     return degrees * Math.PI / 180;
   }
 
-  const addGuiButton = function(id, text) {
+  const addGuiButton = function(id, text, isHighlight) {
     let button = new BABYLON.GUI.HolographicButton(id);
     guiPanel.addControl(button);
     
     let textBlock = new BABYLON.GUI.TextBlock();
     textBlock.text = text;
-    textBlock.color = "white";
-    textBlock.fontSize = 24;
+    textBlock.color = isHighlight ? 'white' : 'gray';
+    textBlock.fontSize = isHighlight ? 28 : 26;
     button.content = textBlock;
 
     return button;
@@ -87,7 +87,6 @@ document.addEventListener('DOMContentLoaded', function() {
     guiPanel.columns = 2;
     guiPanel.radius = 3;
     guiPanel.margin = 0.05;
-    // guiPanel.isVertical = true;
     
     guiManager.addControl(guiPanel);
 
@@ -106,12 +105,16 @@ document.addEventListener('DOMContentLoaded', function() {
     colorButton = addGuiButton('color', 'Color\n...');
     colorButton.pointerEnterAnimation = null;
 
-    let connectButton = addGuiButton('connect', 'Connect Thingy');
+    let connectButton = addGuiButton('connect', 'Connect Thingy', true);
     connectButton.onPointerUpObservable.add(async function() {
       const success = await connectThingy();
       connectButton.content.text = success ? 'Connected' : 'Connection Error';
+      connectButton.content.color = success ? 'green' : 'red';
       connectButton.pointerEnterAnimation = null;
     });
+
+    // microphoneButton = addGuiButton('microphone', 'Microphone\n...');
+    // microphoneButton.pointerEnterAnimation = null;
 
     // Reset optimisation
     guiPanel.blockLayout = false;
@@ -160,6 +163,11 @@ document.addEventListener('DOMContentLoaded', function() {
     colorButton.content.text = `Color\nRGB ${data.detail.red}, ${data.detail.green}, ${data.detail.blue}`;
   }
 
+  // const onThingyMicrophone = function(data) {
+  //   console.log('thingy microphone!', data.detail);
+  //   microphoneButton.content.text = `Microphone\n${data.detail}`;
+  // }
+
   const connectThingy = async function() {
 
     try {
@@ -184,13 +192,15 @@ document.addEventListener('DOMContentLoaded', function() {
         thingy.addEventListener('humidity', onThingyHumidity);
         thingy.addEventListener('gas', onThingyGas);
         thingy.addEventListener('color', onThingyColor);
-        
+        // thingy.addEventListener('microphone', onThingyMicrophone);
+
         await thingy.eulerorientation.start();
         await thingy.button.start();
         await thingy.temperature.start();
         await thingy.humidity.start();
         await thingy.gas.start();
-        await thingy.color.start(); 
+        await thingy.color.start();
+        // await thingy.microphone.start();
 
       } else {
           console.log('Unable to connect to Thingy, is Web Bluetooth supported?');
