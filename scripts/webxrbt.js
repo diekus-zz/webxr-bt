@@ -56,8 +56,10 @@ document.addEventListener('DOMContentLoaded', function() {
   let guiManager,
       guiPanel,
       temperatureButton,
+      humidityButton,
+      gasButton,
+      colorButton,
       thingy = new Thingy({logEnabled: true});
-
 
   const degreesToRadians = function(degrees) {
     return degrees * Math.PI / 180;
@@ -66,15 +68,13 @@ document.addEventListener('DOMContentLoaded', function() {
   const addGuiButton = function(id, text) {
     let button = new BABYLON.GUI.HolographicButton(id);
     guiPanel.addControl(button);
-
-    // alert( button );
-    // alert( button.height );
-
+    
     let textBlock = new BABYLON.GUI.TextBlock();
     textBlock.text = text;
     textBlock.color = "white";
     textBlock.fontSize = 24;
     button.content = textBlock;
+
     return button;
   }
 
@@ -83,9 +83,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Create the 3D UI manager
     guiManager = new BABYLON.GUI.GUI3DManager(scene);
 
-    guiPanel = new BABYLON.GUI.StackPanel3D();
-    guiPanel.margin = 0.02;
-    guiPanel.isVertical = true;
+    guiPanel = new BABYLON.GUI.CylinderPanel();
+    guiPanel.columns = 2;
+    guiPanel.radius = 3;
+    guiPanel.margin = 0.05;
+    // guiPanel.isVertical = true;
     
     guiManager.addControl(guiPanel);
 
@@ -97,6 +99,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     temperatureButton = addGuiButton('temperature', 'Temperature\n...');
     temperatureButton.pointerEnterAnimation = null;
+
+    gasButton = addGuiButton('gas', 'Air Quality\n...');
+    gasButton.pointerEnterAnimation = null;
+
+    colorButton = addGuiButton('color', 'Color\n...');
+    colorButton.pointerEnterAnimation = null;
 
     let connectButton = addGuiButton('connect', 'Connect Thingy');
     connectButton.onPointerUpObservable.add(async function() {
@@ -120,7 +128,6 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   const onThingyOrientation = function(data) {
-    console.log('thingy orientation!', data.detail);
 
     const {roll, pitch, yaw} = data.detail;
 
@@ -137,18 +144,20 @@ document.addEventListener('DOMContentLoaded', function() {
     temperatureButton.content.text = 'Temperature\n' + data.detail.value + '°';
   }
 
-  const onThingyHumidity = function() {
+  const onThingyHumidity = function(data) {
     console.log('thingy humidity!', data.detail.value + data.detail.unit);
     humidityButton.content.text = 'Humidity\n' + data.detail.value + data.detail.unit;
   }
 
-  const onThingyGas = function() {
-    console.log('thingy gas!', data.detail.TVOC.value +  data.detail.TVOC.unit, 
+  const onThingyGas = function(data) {
+    console.log('thingy gas!', data.detail.TVOC.value + data.detail.TVOC.unit, 
       data.detail.eCO2.value + data.detail.eCO2.unit);
+      gasButton.content.text = `Air Quality\nTVOC ${data.detail.TVOC.value} ${data.detail.TVOC.unit}\nCO2 ${data.detail.eCO2.value} ${data.detail.eCO2.unit}`;
   }
 
-  const onThingyColor = function() {
+  const onThingyColor = function(data) {
     console.log('thingy color!', data.detail.red, data.detail.green, data.detail.blue);
+    colorButton.content.text = `Color\nRGB ${data.detail.red}, ${data.detail.green}, ${data.detail.blue}`;
   }
 
   const connectThingy = async function() {
@@ -169,20 +178,19 @@ document.addEventListener('DOMContentLoaded', function() {
         // };
         // await thingy.led.write(newLedConfiguration);
 
-        await thingy.eulerorientation.start();
-        await thingy.button.start();
-
         thingy.addEventListener('eulerorientation', onThingyOrientation);
         thingy.addEventListener('button', onThingyButtonPress);
         thingy.addEventListener('temperature', onThingyTemperature);
-        thingy.addEventListener('color', onThingyColor);
         thingy.addEventListener('humidity', onThingyHumidity);
         thingy.addEventListener('gas', onThingyGas);
-
+        thingy.addEventListener('color', onThingyColor);
+        
+        await thingy.eulerorientation.start();
+        await thingy.button.start();
         await thingy.temperature.start();
-        await thingy.color.start();
         await thingy.humidity.start();
         await thingy.gas.start();
+        await thingy.color.start(); 
 
       } else {
           console.log('Unable to connect to Thingy, is Web Bluetooth supported?');
