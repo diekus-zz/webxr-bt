@@ -1,7 +1,11 @@
 // Nordic Thingy stuff...
 let guiManager,
     guiPanel,
-    temperatureButton,
+    dataListEl,
+    temperatureEl,
+    humidityEl,
+    gasEl,
+    colorEl,
     thingy = new Thingy({logEnabled: true});
 
 const degreesToRadians = function(degrees) {
@@ -10,10 +14,18 @@ const degreesToRadians = function(degrees) {
 
 
 const setupThingyGui = function() {
+  
   const connectButton = document.getElementById('connect');
+  dataListEl = document.getElementById('data');
+  temperatureEl = document.getElementById('temperature');
+  humidityEl = document.getElementById('humidity');
+  gasEl = document.getElementById('gas');
+  colorEl = document.getElementById('color');
+
   connectButton.addEventListener('click', async function() {
     const success = await connectThingy();
     connectButton.innerText = success ? 'Connected' : 'Error';
+    dataListEl.style.display = success ? 'block' : 'none';
   });
 }
 
@@ -39,21 +51,23 @@ const onThingyOrientation = function(data) {
 
 const onThingyTemperature = function(data) {
   console.log('thingy temperature!', data.detail.value);
-  temperatureButton.content.text = 'Temperature\n' + data.detail.value + '°';
+  temperatureEl.innerText = data.detail.value + '°';
 }
 
 const onThingyHumidity = function() {
   console.log('thingy humidity!', data.detail.value + data.detail.unit);
-  humidityButton.content.text = 'Humidity\n' + data.detail.value + data.detail.unit;
+  humidityEl.innerText = data.detail.value + data.detail.unit;
 }
 
 const onThingyGas = function() {
   console.log('thingy gas!', data.detail.TVOC.value +  data.detail.TVOC.unit, 
     data.detail.eCO2.value + data.detail.eCO2.unit);
+  gasEl.innerText = `TVOC ${data.detail.TVOC.value} ${data.detail.TVOC.unit} CO2 ${data.detail.eCO2.value} ${data.detail.eCO2.unit}`;
 }
 
 const onThingyColor = function() {
   console.log('thingy color!', data.detail.red, data.detail.green, data.detail.blue);
+  colorEl.innerText = `RGB ${data.detail.red}, ${data.detail.green}, ${data.detail.blue}`;;
 }
 
 const connectThingy = async function() {
