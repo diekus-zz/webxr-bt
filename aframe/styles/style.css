@@ -18,6 +18,7 @@ html, body {
   right: 0;
   z-index: 1;
   padding: 10px;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 #gui button {
@@ -31,4 +32,11 @@ html, body {
 
 #data {
   display: none;
+  color: #fff;
+  text-shadow: 1px 1px #000;
 }
+
+#data dd {
+  margin-bottom: 10px;
+}
+

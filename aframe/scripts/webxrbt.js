@@ -24,7 +24,7 @@ const setupThingyGui = function() {
 
   connectButton.addEventListener('click', async function() {
     const success = await connectThingy();
-    connectButton.innerText = success ? 'Connected' : 'Error';
+    connectButton.innerText = success ? 'Connected' : 'Connect';
     dataListEl.style.display = success ? 'block' : 'none';
   });
 }
@@ -37,7 +37,7 @@ const onThingyButtonPress = function(event) {
 }
 
 const onThingyOrientation = function(data) {
-  console.log('thingy orientation!', data.detail);
+  //console.log('thingy orientation!', data.detail);
 
   const {roll, pitch, yaw} = data.detail;
 
@@ -88,9 +88,6 @@ const connectThingy = async function() {
       // };
       // await thingy.led.write(newLedConfiguration);
 
-      await thingy.eulerorientation.start();
-      await thingy.button.start();
-
       thingy.addEventListener('eulerorientation', onThingyOrientation);
       thingy.addEventListener('button', onThingyButtonPress);
       thingy.addEventListener('temperature', onThingyTemperature);
@@ -98,6 +95,8 @@ const connectThingy = async function() {
       thingy.addEventListener('humidity', onThingyHumidity);
       thingy.addEventListener('gas', onThingyGas);
 
+      await thingy.eulerorientation.start();
+      await thingy.button.start();
       await thingy.temperature.start();
       await thingy.color.start();
       await thingy.humidity.start();
