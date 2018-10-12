@@ -1,29 +1,21 @@
 // Nordic Thingy stuff...
 let guiManager,
     guiPanel,
-    dataListEl,
-    temperatureEl,
-    humidityEl,
-    gasEl,
-    colorEl,
-    batteryEl,
+    connectButton = document.getElementById('connect'),
+    dataListEl = document.getElementById('data'),
+    temperatureEl = document.getElementById('temperature'),
+    humidityEl = document.getElementById('humidity'),
+    gasEl = document.getElementById('gas'),
+    colorEl = document.getElementById('color'),
+    batteryEl = document.getElementById('battery'),
+    rainEl = document.getElementById('rain'),
     thingy = new Thingy({logEnabled: true});
 
 const degreesToRadians = function(degrees) {
   return degrees * Math.PI / 180;
 }
 
-
 const setupThingyGui = function() {
-  
-  const connectButton = document.getElementById('connect');
-  dataListEl = document.getElementById('data');
-  temperatureEl = document.getElementById('temperature');
-  humidityEl = document.getElementById('humidity');
-  gasEl = document.getElementById('gas');
-  colorEl = document.getElementById('color');
-  batteryEl = document.getElementById('battery');
-
   connectButton.addEventListener('click', async function() {
     console.log('Connect thingy...');
     const success = await connectThingy();
@@ -60,6 +52,8 @@ const onThingyTemperature = function(data) {
 const onThingyHumidity = function(data) {
   console.log('thingy humidity! ' + (data.detail.value + data.detail.unit + ''));
   humidityEl.innerText = data.detail.value + data.detail.unit;
+  // TODO Update rain
+  //rainEl.setAttribute('particle-system', 'preset: rain; opacity: ' + (data.detail.value / 100));
 }
 
 const onThingyGas = function(data) {
@@ -70,7 +64,12 @@ const onThingyGas = function(data) {
 
 const onThingyColor = function(data) {
   console.log('thingy color!', data.detail.red, data.detail.green, data.detail.blue);
-  colorEl.innerText = `RGB ${data.detail.red}, ${data.detail.green}, ${data.detail.blue}`;;
+  colorEl.innerText = `RGB ${data.detail.red}, ${data.detail.green}, ${data.detail.blue}`;
+  // Update background colour
+  let s = document.querySelector('#sph-env');
+  s.components['material'].material.color.r = data.detail.red;
+  s.components['material'].material.color.g = data.detail.green;
+  s.components['material'].material.color.b = data.detail.blue;
 }
 
 const onThingyBattery = function(data) {
