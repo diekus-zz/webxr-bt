@@ -39,10 +39,10 @@
     <a-entity camera position="1.24 1.5 0.8" rotation="-9. -82.1 0" look-controls=""></a-entity>
     <a-entity id="fountain" sound="src:#fountain_src; autoplay:true; loop:true; volume:0.1"></a-entity>
     <a-entity id="parrotcry" sound="src:#parrotcry_src; autoplay:false; loop:false; volume:0.9"></a-entity>
-
-    <a-gltf-model src="#parrot_hi" scale="2 2 2" position="1.9 1 -0.55" rotation="0 1.12 0" gltf-model="models/lapa_hi.glb" id="parrot"></a-gltf-model>
-    <a-gltf-model src="#tree" scale="10 10 10" position="2 0 -2" gltf-model="models/tree.glb" id="tree"></a-gltf-model>
-    
+    <a-entity rotation="0 0 0">
+      <a-gltf-model src="#parrot_hi" scale="2 2 2" position="2.8 1.06 0.3" rotation="0 -102.2 0" gltf-model="models/lapa_hi.glb" id="parrot"></a-gltf-model>
+      <a-gltf-model src="#tree" scale="10 10 10" position="0 0 0" rotation="0 90 0" gltf-model="models/tree.glb" id="tree"></a-gltf-model>
+    </a-entity>
     <a-sphere id="sph-env" scale="-1 1 1" radius="10" material="transparent:true;opacity:0.2;color:#000000;side:double" ></a-sphere>
     <a-entity position="0 2.25 -15" particle-system="preset: rain;opacity:.7"></a-entity>
   </a-scene>  
