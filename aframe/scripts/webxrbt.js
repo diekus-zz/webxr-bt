@@ -140,3 +140,8 @@ let parrotCry = function(){
   let pc = document.querySelector('#parrotcry');
   pc.components.sound.playSound();
 }
+
+let rotateModels = function(ry){
+  let tp = document.querySelector('#parrot');
+  tp.object3D.rotateY(degreesToRadians(ry));
+}
