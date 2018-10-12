@@ -7,10 +7,14 @@
   <script src="scripts/vendor/aframe-master.min.js"></script>
   <script src="https://unpkg.com/aframe-particle-system-component@1.0.x/dist/aframe-particle-system-component.min.js"></script> 
   <script src="scripts/vendor/thingy-bundle.js"></script>
-  <script src="scripts/webxrbt.js"></script>
+  <script defer src="scripts/webxrbt.js"></script>
+  <link href="styles/style.css" rel="stylesheet"/>
   <title>Physical and Immersed (XR + BT) @ GDGDevFest Lviv</title>
 </head>
 <body>
+  <div id="gui">
+    <button id="connect">Connect</button>
+  </div>
   <a-scene>
     <a-assets>
       <audio id="parrotcry_src" src="audio/lapa.wav" preload="auto"></audio>
@@ -31,7 +35,6 @@
     
     <a-sphere id="sph-env" scale="-1 1 1" radius="10" material="transparent:true;opacity:0.2;color:#000000;side:double" ></a-sphere>
     <a-entity position="0 2.25 -15" particle-system="preset: rain;opacity:.7"></a-entity>
-  </a-scene>
-  
+  </a-scene>  
 </body>
 </html>

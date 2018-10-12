@@ -10,13 +10,17 @@ const degreesToRadians = function(degrees) {
 
 
 const setupThingyGui = function() {
-
+  const connectButton = document.getElementById('connect');
+  connectButton.addEventListener('click', async function() {
+    const success = await connectThingy();
+    connectButton.innerText = success ? 'Connected' : 'Error';
+  });
 }
 
 const onThingyButtonPress = function(event) {
   console.log('thingy button press!');
   if (event.detail.value === 1) {
-    // TODO on Thingy button press
+    parrotCry();
   }
 }
 
