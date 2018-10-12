@@ -6,6 +6,7 @@ let guiManager,
     humidityEl,
     gasEl,
     colorEl,
+    batteryEl,
     thingy = new Thingy({logEnabled: true});
 
 const degreesToRadians = function(degrees) {
@@ -21,8 +22,10 @@ const setupThingyGui = function() {
   humidityEl = document.getElementById('humidity');
   gasEl = document.getElementById('gas');
   colorEl = document.getElementById('color');
+  batteryEl = document.getElementById('battery');
 
   connectButton.addEventListener('click', async function() {
+    console.log('Connect thingy...');
     const success = await connectThingy();
     connectButton.innerText = success ? 'Connected' : 'Connect';
     dataListEl.style.display = success ? 'block' : 'none';
@@ -54,20 +57,25 @@ const onThingyTemperature = function(data) {
   temperatureEl.innerText = data.detail.value + '°';
 }
 
-const onThingyHumidity = function() {
-  console.log('thingy humidity!', data.detail.value + data.detail.unit);
+const onThingyHumidity = function(data) {
+  console.log('thingy humidity! ' + (data.detail.value + data.detail.unit + ''));
   humidityEl.innerText = data.detail.value + data.detail.unit;
 }
 
-const onThingyGas = function() {
+const onThingyGas = function(data) {
   console.log('thingy gas!', data.detail.TVOC.value +  data.detail.TVOC.unit, 
     data.detail.eCO2.value + data.detail.eCO2.unit);
-  gasEl.innerText = `TVOC ${data.detail.TVOC.value} ${data.detail.TVOC.unit} CO2 ${data.detail.eCO2.value} ${data.detail.eCO2.unit}`;
+  gasEl.innerHTML = `TVOC ${data.detail.TVOC.value} ${data.detail.TVOC.unit}<br>CO2 ${data.detail.eCO2.value} ${data.detail.eCO2.unit}`;
 }
 
-const onThingyColor = function() {
+const onThingyColor = function(data) {
   console.log('thingy color!', data.detail.red, data.detail.green, data.detail.blue);
   colorEl.innerText = `RGB ${data.detail.red}, ${data.detail.green}, ${data.detail.blue}`;;
+}
+
+const onThingyBattery = function(data) {
+  console.log('thingy battery! ', data.detail);
+  batteryEl.innerText = data.detail.status + '%';
 }
 
 const connectThingy = async function() {
@@ -94,6 +102,7 @@ const connectThingy = async function() {
       thingy.addEventListener('color', onThingyColor);
       thingy.addEventListener('humidity', onThingyHumidity);
       thingy.addEventListener('gas', onThingyGas);
+      thingy.addEventListener('battery', onThingyBattery);
 
       await thingy.eulerorientation.start();
       await thingy.button.start();
@@ -101,6 +110,7 @@ const connectThingy = async function() {
       await thingy.color.start();
       await thingy.humidity.start();
       await thingy.gas.start();
+      await thingy.battery.start();
 
     } else {
         console.log('Unable to connect to Thingy, is Web Bluetooth supported?');
