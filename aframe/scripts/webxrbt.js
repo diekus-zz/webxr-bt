@@ -2,6 +2,7 @@
 let guiManager,
     guiPanel,
     connectButton = document.getElementById('connect'),
+    sceneEl = document.getElementById('scene'),
     dataListEl = document.getElementById('data'),
     temperatureEl = document.getElementById('temperature'),
     humidityEl = document.getElementById('humidity'),
@@ -9,7 +10,8 @@ let guiManager,
     colorEl = document.getElementById('color'),
     batteryEl = document.getElementById('battery'),
     rainEl = document.getElementById('rain'),
-    thingy = new Thingy({logEnabled: true});
+    thingy = new Thingy({logEnabled: true}),
+    madeItRain = false;
 
 const degreesToRadians = function(degrees) {
   return degrees * Math.PI / 180;
@@ -42,10 +44,9 @@ const onThingyOrientation = function(data) {
   // cube.rotation = new BABYLON.Vector3(degreesToRadians(pitch), 
   //     degreesToRadians(yaw), degreesToRadians(roll));
 
-  rotateModels(pitch);
+  flipTheBird(pitch);
 
 }
-
 
 const onThingyTemperature = function(data) {
   console.log('thingy temperature!', data.detail.value);
@@ -55,8 +56,7 @@ const onThingyTemperature = function(data) {
 const onThingyHumidity = function(data) {
   console.log('thingy humidity! ' + (data.detail.value + data.detail.unit + ''));
   humidityEl.innerText = data.detail.value + data.detail.unit;
-  // TODO Update rain
-  //rainEl.setAttribute('particle-system', 'preset: rain; opacity: ' + (data.detail.value / 100));
+  makeItRain(data.detail.value);
 }
 
 const onThingyGas = function(data) {
@@ -129,8 +129,8 @@ const connectThingy = async function() {
 setupThingyGui();
 
 //A-Frame scene stuff...
-let changeEnvironmentColor = function(temp){
-  let s = document.querySelector('#sph-env');
+const changeEnvironmentColor = function(temp){
+  const s = document.querySelector('#sph-env');
   
   s.components['material'].material.color.r = temp*9;
   s.components['material'].material.color.g = 0;
@@ -138,15 +138,33 @@ let changeEnvironmentColor = function(temp){
   
 };
 
-let parrotCry = function(){
-  let pc = document.querySelector('#parrotcry');
+const parrotCry = function(){
+  const pc = document.querySelector('#parrotcry');
   pc.components.sound.playSound();
 }
 
-let rotateModels = function(ry){
-  let tp = document.querySelector('#parrot');
+const flipTheBird = function(ry){
+  const parrot = document.querySelector('#parrot');
+  parrot.setAttribute('rotation', Math.round(ry / 18) + ' -102.2 0');
+}
 
-  //console.log('flip the bird!', tp, ry);
-  tp.setAttribute('rotation', Math.round(ry / 18) + ' -102.2 0');
-  //tp.object3D.rotateX(degreesToRadians(ry / 18));
+const makeItRain = function(humidityPct) {
+  if (madeItRain) {
+    return;
+  }
+  const rain = document.createElement('a-entity');
+  rain.id = 'rain';
+  rain.setAttribute('position', '0 2.25 -15');
+  // Humidity of 100 = 0.1. Humidity of 50 = 2.5. Humidity of 0 = 5.
+  const maxAge = Math.max(0.1, 5 - (humidityPct / 20));
+  rain.setAttribute('particle-system', `preset:rain;opacity:.7; maxAge:${maxAge}`);
+  sceneEl.appendChild(rain);
+
+  const rainSound = document.createElement('a-entity');
+  rainSound.id = 'rain-sound';
+  rainSound.setAttribute('sound', 'src:#rain_src; autoplay:true; loop:true; volume:0.2');
+  sceneEl.appendChild(rainSound);
+
+  console.log('Made it rain');
+  madeItRain = true;
 }

@@ -27,10 +27,10 @@
       <dd id="battery">...</dd>
     </dl>
   </div>
-  <a-scene>
+  <a-scene id="scene">
     <a-assets>
       <audio id="parrotcry_src" src="audio/lapa.wav" preload="auto"></audio>
-      <audio id="fountain_src" src="audio/fountain.wav" preload="auto"></audio>
+      <audio id="rain_src" src="audio/fountain.wav" preload="auto"></audio>
       <a-asset-item id="parrot_hi" src="models/lapa_hi.glb"></a-asset-item>
       <a-asset-item id="parrot_lo" src="models/lapa_lo.glb"></a-asset-item>
       <a-asset-item id="tree" src="models/tree.glb"></a-asset-item>
@@ -39,14 +39,13 @@
     <a-sky src="#sky" phi-start="180"></a-sky>
     
     <a-entity camera position="1.24 1.5 0.8" rotation="-9. -82.1 0" look-controls=""></a-entity>
-    <a-entity id="fountain" sound="src:#fountain_src; autoplay:true; loop:true; volume:0.1"></a-entity>
     <a-entity id="parrotcry" sound="src:#parrotcry_src; autoplay:false; loop:false; volume:0.9"></a-entity>
     <!--<a-entity id="treeparrot" position="0 0 0" rotation="0 0 0">-->
-      <a-gltf-model id="parrot" src="#parrot_hi" scale="2 2 2" position="2.8 1.06 0.3" rotation="0 -102.2 0" gltf-model="models/lapa_hi.glb" id="parrot"> </a-gltf-model>
+      <a-gltf-model id="parrot" src="#parrot_hi" scale="2 2 2" position="2.8 1.06 0.22458276439024066" rotation="0 -102.2 0" gltf-model="models/lapa_hi.glb" id="parrot"> </a-gltf-model>
       <a-gltf-model src="#tree" scale="10 10 10" position="0 0 0" rotation="0 90 0" gltf-model="models/tree.glb" id="tree"></a-gltf-model>
     <!--</a-entity>-->
     <a-sphere id="sph-env" scale="-1 1 1" radius="10" material="transparent:true;opacity:0.2;color:#000000;side:double" ></a-sphere>
-    <a-entity id="rain" position="0 2.25 -15" particle-system="preset: rain;opacity:.7"></a-entity>
+    <!--<a-entity id="rain" position="0 2.25 -15" particle-system="preset: rain;opacity:.7; maxAge:20;"></a-entity>-->
   </a-scene>  
 </body>
 </html>
