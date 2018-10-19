@@ -19,7 +19,7 @@ const setupThingyGui = function() {
   connectButton.addEventListener('click', async function() {
     console.log('Connect thingy...');
     const success = await connectThingy();
-    connectButton.innerText = success ? 'Connected' : 'Connect';
+    connectButton.innerText = success ? 'Connected' : 'Try again';
     dataListEl.style.display = success ? 'block' : 'none';
   });
 }
@@ -41,6 +41,9 @@ const onThingyOrientation = function(data) {
   // roll = z, yaw = y, pitch = x
   // cube.rotation = new BABYLON.Vector3(degreesToRadians(pitch), 
   //     degreesToRadians(yaw), degreesToRadians(roll));
+
+  rotateModels(pitch);
+
 }
 
 
@@ -142,5 +145,8 @@ let parrotCry = function(){
 
 let rotateModels = function(ry){
   let tp = document.querySelector('#parrot');
-  tp.object3D.rotateY(degreesToRadians(ry));
+
+  //console.log('flip the bird!', tp, ry);
+  tp.setAttribute('rotation', Math.round(ry / 18) + ' -102.2 0');
+  //tp.object3D.rotateX(degreesToRadians(ry / 18));
 }
