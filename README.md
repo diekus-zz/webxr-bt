@@ -1,6 +1,6 @@
 # WebXR + Web Bluetooth demo
 
-A demo by Diego González-Zúñiga and Peter O'Shaughnessy, presented at GDG DevFest Ukraine and Heapcon. A web-based VR experience which uses realtime sensor data from a Nordic Thingy, a small multi-sensor device accessible via Bluetooth Low Energy. The virtual world adapts in real-time to our physical world.
+A demo by Diego González-Zúñiga and Peter O'Shaughnessy, presented at GDG DevFest Ukraine and Heapcon. A web-based VR experience which uses real-time sensor data from a Nordic Thingy, a small multi-sensor device accessible via Bluetooth Low Energy. The virtual world adapts to the data from the physical world.
 
 ## Instructions
 
