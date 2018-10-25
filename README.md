@@ -12,4 +12,4 @@ A demo by Diego González-Zúñiga and Peter O'Shaughnessy, presented at GDG Dev
 * Tilt the Thingy backwards and forwards to make the parrot nod up and down. 🐦
 * Press the button to make the parrot sqwawk! 🗯️
 
-For more information, see [our blog post here](https://medium.com/samsung-internet-dev/creating-a-physical-and-immersive-web-mashup-b5418f14b982).
+For more information and a demo video, see [our blog post here](https://medium.com/samsung-internet-dev/creating-a-physical-and-immersive-web-mashup-b5418f14b982).
